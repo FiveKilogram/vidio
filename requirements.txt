@@ -1,6 +1,5 @@
 beautifulsoup4==4.6.0
-browser-cookie3==0.6.3
-browsercookie==0.7.2
+browser-cookie3==0.6.4
 bs4==0.0.1
 certifi==2018.4.16
 chardet==3.0.4

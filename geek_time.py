@@ -4,28 +4,20 @@ import requests
 import json
 import os
 import regex as re
-import browsercookie
+import browser_cookie3
 
 mobile_headers = {
-    'Host': "time.geekbang.org",
-    'X-GEEK-APP-NAME': "time",
-    'X-GEEK-DEVICE-MODEL': "iPhone7,2",
-    'Accept': "*/*",
-    'X-GEEK-OS-VER': "11.3",
-    'Ticket': "AwgBAQQEIBwAAAEEYkEQAAoEDwAAAAUEgMYTAAkBAQsCAwAHBLx.4K8GBF5ck0gCBOq6uFoDBOJ74lo-",
-    'X-GEEK-VER-NAME': "1.1.4",
-    'Device-Id': "3C9553DD-611C-4EBE-B703-109AD179F848",
-    'Device-Token': "c839237dbd40706072532646df282c50ac0b8ebf60cd06fa5e54d70b041b5c77",
-    'Accept-Language': "zh-cn",
-    'Accept-Encoding': "br, gzip, deflate",
-    'Content-Type': "application/json",
-    'Content-Length': "57",
-    'User-Agent': "iPhone7,2(iOS/11.3) GeekbangApp(Zeus/1.1.4) Weex/0.16.1 ExternalUA 750x1334",
-    'X-GEEK-OS-PLATFORM': "iOS",
-    'Referer': "http://www.geekbang.org/",
-    'X-GEEK-OS-NAME': "iOS",
-    'Connection': "keep-alive",
-    'Cache-Control': "no-cache"
+    'Accept': 'application/json, text/plain, */*',
+'Accept-Encoding': 'gzip, deflate, br',
+'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+'Connection': 'keep-alive',
+"Content-Type": "application/json",
+'Content-Length': '0',
+'Cookie': '_ga=GA1.2.966311996.1559739092; _gid=GA1.2.2067689314.1559739092; GCID=7beecdb-ca03875-7887861-c789959; GCESS=BAUEAAAAAAIE4rr3XAME4rr3XAYE1iedlQEEJXAWAAwBAQcEiGZ5BwQEAC8NAAkBAQoEAAAAAAgBAwsCBAA-; Hm_lvt_022f847c4e3acd44d4a2481d9187f1e6=1559739092,1559739107; Hm_lpvt_022f847c4e3acd44d4a2481d9187f1e6=1559744537; SERVERID=1fa1f330efedec1559b3abbcb6e30f50|1559746735|1559739091; _gat=1',
+'Host': 'time.geekbang.org',
+'Origin': 'https://account.geekbang.org',
+'Referer': 'https://account.geekbang.org/dashboard/buy?category=1&sort=1&order=sort',
+'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
 }
 
 # 专栏
@@ -41,7 +33,7 @@ audio_url = "https://time.geekbang.org/serv/v1/column/audios"
 all_column_url = "https://time.geekbang.org/serv/v1/columns"
 
 # 获取 Chrome cookie
-cj = browsercookie.chrome()
+cj = browser_cookie3.chrome()
 
 JSON_PATH = os.path.join(os.getcwd(), 'json/')
 AUDIO_PATH = os.path.join(os.getcwd(), 'audio/')
@@ -96,7 +88,7 @@ def column_type_string(column_type):
 
 # 获取我的专栏
 def fetch_my_column():
-    payload = "{}"
+    payload = '{}'
     response = requests.request("POST", my_column_url, data=payload, headers=mobile_headers)
     json_data = json.loads(response.content.decode('utf-8'))
 
@@ -115,7 +107,7 @@ def fetch_my_column():
 
 # 根据专栏 id 获取视频
 def download_video_by_cid(cid, size):
-    payload = " {\"cid\":%d,\"size\":%d,\"prev\":%d,\"order\":\"earliest\"}" % (cid, size, 0)
+    payload = " {\"cid\":%s,\"size\":%d,\"prev\":%d,\"order\":\"earliest\"}" % (cid, size, 0)
     response = requests.request("POST", video_url, data=payload, cookies=cj, headers=mobile_headers)
     print(response.content.decode('utf-8'))
     download_videos(response)
