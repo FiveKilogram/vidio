@@ -5,6 +5,7 @@ import json
 import os
 import regex as re
 import browser_cookie3
+import numpy as np
 
 mobile_headers = {
     'Accept': 'application/json, text/plain, */*',
@@ -13,7 +14,7 @@ mobile_headers = {
 'Connection': 'keep-alive',
 "Content-Type": "application/json",
 'Content-Length': '0',
-'Cookie': '_ga=GA1.2.966311996.1559739092; _gid=GA1.2.2067689314.1559739092; GCID=7beecdb-ca03875-7887861-c789959; GCESS=BAUEAAAAAAIE4rr3XAME4rr3XAYE1iedlQEEJXAWAAwBAQcEiGZ5BwQEAC8NAAkBAQoEAAAAAAgBAwsCBAA-; Hm_lvt_022f847c4e3acd44d4a2481d9187f1e6=1559739092,1559739107; Hm_lpvt_022f847c4e3acd44d4a2481d9187f1e6=1559744537; SERVERID=1fa1f330efedec1559b3abbcb6e30f50|1559746735|1559739091; _gat=1',
+'Cookie': '_ga=GA1.2.966311996.1559739092; GCID=7beecdb-ca03875-7887861-c789959; _gid=GA1.2.1269686349.1560245138; GCESS=BAcEbtgv0QQEAC8NAAYE1iedlQkBAQMEFE0AXQwBAQIEFE0AXQgBAwsCBAAFBAAAAAAKBAAAAAABBCVwFgA-; Hm_lvt_022f847c4e3acd44d4a2481d9187f1e6=1559804304,1560245138,1560245160,1560300821; SERVERID=3431a294a18c59fc8f5805662e2bd51e|1560300886|1560300810; _gat=1; Hm_lpvt_022f847c4e3acd44d4a2481d9187f1e6=1560300887',
 'Host': 'time.geekbang.org',
 'Origin': 'https://account.geekbang.org',
 'Referer': 'https://account.geekbang.org/dashboard/buy?category=1&sort=1&order=sort',
@@ -110,31 +111,42 @@ def download_video_by_cid(cid, size):
     payload = " {\"cid\":%s,\"size\":%d,\"prev\":%d,\"order\":\"earliest\"}" % (cid, size, 0)
     response = requests.request("POST", video_url, data=payload, cookies=cj, headers=mobile_headers)
     print(response.content.decode('utf-8'))
-    download_videos(response)
-
-def download_videos(response):
+    download_videos(response, '')
+def download_video_by_array (cid, numberArray, size):
+    payload = " {\"cid\":%s,\"size\":%d,\"prev\":%d,\"order\":\"earliest\"}" % (cid, size, 0)
+    response = requests.request("POST", video_url, data=payload, cookies=cj, headers=mobile_headers)
+    download_videos(response, numberArray)
+def download_videos(response, arrays):
     json_data = json.loads(response.content.decode('utf-8'))
-    print(json_data)
     data = json_data.get('code')
     if data != 0:
         return
 
     list = json_data.get('data').get('list')
-
+    index = 0
+    # if arrays != '':
+    #     arrays = np.array(arrays)
+    print(arrays)
     for item in list:
-        video_media = item.get('video_media')
-        article_title = item.get('article_title')
+        index = str(int(index) + 1)
+        print(index)
+        print(index not in arrays)
+        if arrays != '' and index not in arrays:
+            continue
+        else:  
+            video_media = item.get('video_media')
+            article_title = item.get('article_title')
 
-        pattern = ' |\|'
-        article_title = re.sub(pattern, '_', article_title)
-        print(article_title)
-        print(video_media)
-        if len(video_media) > 0:
-            video = json.loads(video_media)
-            video_path = VIDEO_PATH + article_title +'.mp4'
-            m3u8 = video.get('hd').get('url')
-            cmd = 'ffmpeg -y -i %s %s' % (m3u8, video_path)
-            os.system(cmd.encode('utf-8'))
+            pattern = ' |\|'
+            article_title = re.sub(pattern, '_', article_title)
+            print(article_title)
+            print(video_media)
+            if len(video_media) > 0:
+                video = json.loads(video_media)
+                video_path = VIDEO_PATH + article_title +'.mp4'
+                m3u8 = video.get('hd').get('url')
+                cmd = 'ffmpeg -y -i %s %s' % (m3u8, video_path)
+                os.system(cmd.encode('utf-8'))
 
 # 根据专栏 id 获取音频
 def download_audio_by_cid(cid, size):
