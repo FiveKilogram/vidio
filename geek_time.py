@@ -14,7 +14,7 @@ mobile_headers = {
 'Connection': 'keep-alive',
 "Content-Type": "application/json",
 'Content-Length': '0',
-'Cookie': '_ga=GA1.2.966311996.1559739092; GCID=7beecdb-ca03875-7887861-c789959; _gid=GA1.2.1269686349.1560245138; GCESS=BAcEbtgv0QQEAC8NAAYE1iedlQkBAQMEFE0AXQwBAQIEFE0AXQgBAwsCBAAFBAAAAAAKBAAAAAABBCVwFgA-; Hm_lvt_022f847c4e3acd44d4a2481d9187f1e6=1559804304,1560245138,1560245160,1560300821; SERVERID=3431a294a18c59fc8f5805662e2bd51e|1560300886|1560300810; _gat=1; Hm_lpvt_022f847c4e3acd44d4a2481d9187f1e6=1560300887',
+'Cookie': '_ga=GA1.2.966311996.1559739092; GCID=7beecdb-ca03875-7887861-c789959; _gid=GA1.2.1269686349.1560245138; GCESS=BAgBAwwBAQoEAAAAAAEEJXAWAAIEeJYBXQYE1iedlQQEAC8NAAsCBAADBHiWAV0FBAAAAAAHBPvgykIJAQE-; Hm_lvt_022f847c4e3acd44d4a2481d9187f1e6=1560245160,1560300821,1560330684,1560385145; Hm_lpvt_022f847c4e3acd44d4a2481d9187f1e6=1560385145; SERVERID=1fa1f330efedec1559b3abbcb6e30f50|1560385145|1560385095',
 'Host': 'time.geekbang.org',
 'Origin': 'https://account.geekbang.org',
 'Referer': 'https://account.geekbang.org/dashboard/buy?category=1&sort=1&order=sort',
@@ -129,14 +129,14 @@ def download_videos(response, arrays):
     print(arrays)
     for item in list:
         index = str(int(index) + 1)
-        print(index)
-        print(index not in arrays)
         if arrays != '' and index not in arrays:
             continue
         else:  
             video_media = item.get('video_media')
             article_title = item.get('article_title')
-
+            article_title = article_title.replace('(','（')
+            article_title = article_title.replace(')','）')
+            print(article_title)
             pattern = ' |\|'
             article_title = re.sub(pattern, '_', article_title)
             print(article_title)
